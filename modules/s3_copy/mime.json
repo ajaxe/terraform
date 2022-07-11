@@ -1,0 +1,10 @@
+{
+  ".html": "text/html",
+  ".htm": "text/html",
+  ".js": "text/javascript",
+  ".ico": "image/vnd.microsoft.icon",
+  ".css": "text/css",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+  ".png": "image/png"
+}
