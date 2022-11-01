@@ -68,6 +68,7 @@ module "webapp_lambda" {
   app_name               = var.app_name
   deployment_package_key = "${var.app_name}-webapp-${var.environment}/package.zip"
   lambda_add_on_policy   = data.aws_iam_policy_document.lambda_add_on.json
+  memory_size            = var.memory_size
   runtime                = var.runtime
   env_variables = {
     ASPNETCORE_ENVIRONMENT = local.env_map[var.environment]

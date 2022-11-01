@@ -15,3 +15,6 @@ variable "runtime" {
 variable "webapp_folder" {
   type = string
 }
+variable "memory_size" {
+  default = 1024
+}
