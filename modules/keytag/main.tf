@@ -9,6 +9,7 @@ locals {
   build_runtime = {
     "dotnetcore3.1" = "netcoreapp3.1"
     dotnet6         = "net6.0"
+    dotnet8         = "net8.0"
   }
 }
 data "aws_caller_identity" "current" {}
