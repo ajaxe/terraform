@@ -59,7 +59,9 @@ module "app_lambda" {
   memory_size            = var.memory_size
   runtime                = var.runtime
   env_variables = {
-    SHARED_KEY = var.pre_shared_key
+    SHARED_KEY     = var.pre_shared_key
+    HOSTED_ZONE_ID = var.hosted_zone_id
+    AWS_REGION     = var.aws_region
   }
 
   depends_on = [
