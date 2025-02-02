@@ -8,7 +8,7 @@ variable "root_proxy_uri" {
 
 }
 variable "proxy_uri" {
-
+  default = ""
 }
 variable "authorization" {
   default = "NONE"

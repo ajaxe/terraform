@@ -6,7 +6,7 @@ resource "aws_s3_object" "lambda_package" {
   bucket                 = data.aws_s3_bucket.deployment_bucket.id
   key                    = "${var.deployment_key_prefix}/${var.deployment_package_key}"
   source                 = var.lambda_zip_path.output_path
-  etag                   = var.lambda_zip_path.output_md5
+  etag                   = var.lambda_zip_path.output_sha256
   server_side_encryption = "AES256"
 }
 
