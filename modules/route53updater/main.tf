@@ -7,10 +7,10 @@ locals {
 
 data "aws_caller_identity" "current" {}
 
-resource "null_resource" "exec_build" {
-  triggers = {
-    always_run = timestamp()
-  }
+resource "terraform_data" "exec_build" {
+  triggers_replace = [timestamp()]
+
+  input = local.lambda_zip_path
 
   provisioner "local-exec" {
     command     = "go build -o ${local.publish_folder}/${local.exec_output_name} main.go"
@@ -23,12 +23,15 @@ resource "null_resource" "exec_build" {
   }
 }
 
-resource "null_resource" "zip_windows_package" {
+resource "terraform_data" "zip_windows_package" {
+  triggers_replace = [timestamp()]
+
+  input = terraform_data.exec_build.output
+
   provisioner "local-exec" {
     command     = "build-lambda-zip.exe -o ${local.exec_output_name}.zip ${local.exec_output_name}"
     working_dir = "${local.publish_folder}/"
   }
-  depends_on = [null_resource.exec_build]
 }
 
 data "aws_iam_policy_document" "lambda_add_on" {
@@ -47,8 +50,8 @@ module "app_lambda" {
 
   lambda_zip_path = {
     output_path         = local.lambda_zip_path
-    output_sha256       = fileexists(local.lambda_zip_path) ? filesha256(local.lambda_zip_path) : ""
-    output_base64sha256 = ""
+    output_sha256       = filesha256(terraform_data.zip_windows_package.output)
+    output_base64sha256 = filesha256(terraform_data.zip_windows_package.output)
   }
   function_name          = "${var.app_name}-${var.environment}"
   function_handler       = "route53updater"
@@ -61,12 +64,8 @@ module "app_lambda" {
   env_variables = {
     SHARED_KEY     = var.pre_shared_key
     HOSTED_ZONE_ID = var.hosted_zone_id
-    AWS_REGION     = var.aws_region
+    APP_AWS_REGION = var.aws_region
   }
-
-  depends_on = [
-    null_resource.zip_windows_package
-  ]
 }
 module "app_apigateway" {
   source = "../apigateway"
